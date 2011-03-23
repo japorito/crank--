@@ -31,7 +31,7 @@ RankSystem::RankSystem(string filename)
       choice = to_lowercase(choice);
 
       if (choice == "" || choice == "yes" || choice == "y") {
-	makeRankBook(filename);
+	makeRankConf(filename);
 	rankConf.open(filename.c_str(), fstream::in);
 	acceptable = true;
       }
@@ -56,14 +56,14 @@ void RankSystem::makeRankConf(string filename)
   cout << "The program must process a valid detailed roster source page to construct a rank.conf.  Please enter the name of the file you would like to use." << endl;
   makeRankBook(""); //extract info from HTML.
   if (empty()) return; //failure to process.
-  const vector <Data> & roster = getRankBook(); //local copy.
+  const vector <Data> & roster = getRankBook();
 
-  //process the rank book.
+  //process the rank book. Might need re-doing.
   for (unsigned int i = 0; i < roster.size(); i++) {
     rankNames.push_back(roster[i].rank);
   }
 
-  //remove duplicate rankNames... N^2
+  //remove duplicate rankNames... N^2 Might need redoing.
   for (unsigned int i = 0; i < rankNames.size(); i++) {
     for (unsigned int j = i+1; j < rankNames.size();) {
       if (rankNames[i] == rankNames[j]) rankNames.erase(rankNames.begin()+j);
