@@ -25,6 +25,7 @@ int main(int argc, char* argv[])
 {
   bool options [3] = {false, false, false}; //option flags. {human-readable, search, search by criteria}
   string filename = "", criteria = ""; //search criteria
+  RankSystem ranksystem;
 
   //Command line argument processing.
   for (int argument = 1; argument < argc; argument++) {

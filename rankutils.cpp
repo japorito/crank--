@@ -7,16 +7,22 @@
 
 using namespace std;
 
+RankUtils::RankUtils() {}
+
 RankUtils::RankUtils(string filename)
 {
-  //options bool array contains option flags. {human-readable, search}
+  makeRankBook(filename);
+}
+
+void RankUtils::makeRankBook(string filename)
+{
   fstream roster;
   string is;
   string raw;
   int line=0;
 
   if (filename == "") {
-    //if constructor is called without an argument, get the filename.
+    //if constructor is called with empty string as argument, get the filename.
     cout << "Input filename: ";
     cin >> filename;
   }
@@ -44,18 +50,20 @@ RankUtils::RankUtils(string filename)
    */
   bool watching = false; //flag turning on and off assigning to variables
   Data tempData;
-  string tempKarma;
+  string tempKarma; //read in as string at first, until it is converted to an int
   int rawLength = raw.find("clan_members.php"); // to avoid function call in loop
-  watchFor watchingFor = PERSON;
+  watchFor watchingFor = PERSON; //next data member to pull from HTML
 
   for (int i = raw.find("showplayer.php?who="); i < rawLength; i++) {
-    if (raw[i] == '>') {
+    if (raw[i] == '>') { //start looking for data to pull (out of HTML)
       watching = true;
       i++;
     }
-    if (raw[i] == '<' || raw[i] == '&') {
+    if (raw[i] == '<' || raw[i] == '&') { //stop looking for data. & stops recording if, for instance, it hits an &nbsp;
+
       //toggles watching to off and shifts what it is watching for to the next thing.
       watching = false;
+
       if (watchingFor == PERSON && !tempData.person.empty()) watchingFor = CLASS;
       if (watchingFor == CLASS && !tempData.playerClass.empty()) watchingFor = RANK;
       if (watchingFor == RANK && !is_int(tempData.rank) && !tempData.rank.empty()) {
@@ -64,7 +72,9 @@ RankUtils::RankUtils(string filename)
       }
       if (watchingFor == RANK && is_int(tempData.rank)) tempData.rank.clear();
       //if it is an int, throw it away.
+
       if (watchingFor == KARMA && !tempKarma.empty()) {
+	//By now, a person's info is pulled.  This stores it.
 	watchingFor = PERSON;
 	tempData.karma = to_int(tempKarma);
 	rankBook.push_back(tempData);
@@ -74,13 +84,14 @@ RankUtils::RankUtils(string filename)
 	tempKarma.clear();
       }
     }
-    if (watching) {
+
+    if (watching) { //actual pulling of data
       if (watchingFor == PERSON) tempData.person += raw[i];
       if (watchingFor == CLASS) tempData.playerClass += raw[i];
       if (watchingFor == RANK && raw[i] != ',') tempData.rank += raw[i];
       if (watchingFor == KARMA) tempKarma += raw[i];
     }
-  }
+  }  
 }
 
 inline bool RankUtils::is_int(string input) const
@@ -92,6 +103,7 @@ inline bool RankUtils::is_int(string input) const
 }
 
 inline int RankUtils::to_int(string input) {
+  //converts integer string to int
   int answer = 0, tempNum = 0;
   for (unsigned int i = 0; i < input.length(); i++) {
     if (input[i] == '0') tempNum = 0;

@@ -2,10 +2,14 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include "rank.hpp"
+#include "rankutils.hpp"
+
+#ifndef RANK_HPP
+#define RANK_HPP
 
 using namespace std;
 
+//struct for holding the information about the ranksystem
 struct Ranks {
   string rank;
   string abbreviation;
@@ -17,18 +21,13 @@ struct Ranks {
 };
 
 class RankSystem
+  : public RankUtils
 {
  public:
   RankSystem(string filename="rank.conf");
-  void makeRank(string filename);
+  void makeRankConf(string filename); //make a limited-functionality rank.conf
  private:
-  vector <Ranks> rankInfo;
-  inline string to_lowercase(string input);
+  vector <Ranks> rankInfo; //holds the important rank.conf info
 };
 
-inline string RankSystem::to_lowercase(string input) {
-  for (unsigned int i=0; i<input.length(); i++) {
-    input[i] = (char) tolower(input[i]);
-  }
-  return input;
-}
+#endif
