@@ -1,5 +1,5 @@
-#include "rank.h"
-#include "ranksystem.h"
+#include "rank.hpp"
+#include "ranksystem.hpp"
 #include <string>
 #include <iostream>
 #include <iomanip>

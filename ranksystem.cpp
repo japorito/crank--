@@ -2,8 +2,8 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include "ranksystem.h"
-#include "rank.h"
+#include "ranksystem.hpp"
+#include "rank.hpp"
 
 using namespace std;
 

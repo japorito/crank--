@@ -2,7 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include "rank.h"
+#include "rank.hpp"
 
 using namespace std;
 
