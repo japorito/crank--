@@ -117,5 +117,5 @@ void RankSystem::makeRankConf(string filename)
 	     << endl;
   }
 
-  cout << endl << "rank.conf created.  Given a sufficiently big clan with a sufficiently simple 100% karma-based and up-to-date clan, the automatically generated rank.conf could be fully functional, but for the majority of cases, significant editing will be necessary for the ranking functionality to work.  Searching will work, except for by rank line." << endl;
+  cout << endl << "rank.conf created.  Given a sufficiently big clan with a sufficiently simple 100% karma-based and up-to-date clan, the automatically generated rank.conf could be fully functional, but for the majority of cases, significant editing will be necessary for the ranking functionality to work.  Searching will work, except for by rank line. YOU CAN RANK WITH THIS RANK.CONF BUT IT WILL LIKELY BE WILDLY INACCURATE." << endl;
 }
