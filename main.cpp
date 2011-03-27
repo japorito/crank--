@@ -21,6 +21,34 @@ void helpText() {
        << "                                   karma-between" << endl;
 }
 
+void humanOutput(vector<PersonToRank> rankees)
+{
+  if (rankees.size() == 0) {
+    cout << "Ranks are up-to-date." << endl; //will also print if doRanks() is not called prior to function call.
+  }
+  else {
+    for (unsigned int i = 0; i < rankees.size(); i++) {
+      cout << rankees[i].person << " (" << rankees[i].karma 
+	   << " karma) Ranked: " << rankees[i].currentRank
+	   << " Switch to: " << rankees[i].destRank << endl;
+    }
+  }
+}
+
+void defaultOutput(vector <PersonToRank> rankees)
+{
+  if (rankees.size() == 0) {
+    cout << "Ranks are up-to-date." << endl;
+  }
+  else {
+    for (unsigned int i = 0; i < rankees.size(); i++) {
+      cout << rankees[i].person << " " << rankees[i].karma
+	   << " " << rankees[i].currentAbbr << "->" 
+	   << rankees[i].destAbbr << endl;
+    }
+  }
+}
+
 int main(int argc, char* argv[])
 {
   bool options [3] = {false, false, false}; //option flags. {human-readable, search, search by criteria}
@@ -65,6 +93,9 @@ int main(int argc, char* argv[])
   Rank rank(options, filename);
 
   rank.doRanks(ranksystem.getRankInfo());
+
+  if (options[0] && !options[1] && !options[2]) humanOutput(rank.getRankees());
+  if (!options[0] && !options[1] && !options[2]) defaultOutput(rank.getRankees());
 
   return 0;
 }

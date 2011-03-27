@@ -1,8 +1,6 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include <fstream>
-#include <sstream>
 #include <cmath>
 #include "rankutils.hpp"
 
@@ -26,7 +24,9 @@ class Rank
 {
   public:
     Rank(bool options[], string filename, string criteria = "");
-    void doRanks(const vector<Ranks> ranksystem);
+    void doRanks(const vector<Ranks> ranksystem); //process ranks to find people who need changed.  Stored in peopleToRank.
+    const vector <PersonToRank> & getRankees() const; //get reference to peopleToRank.
+    bool checkRankees() const {return (peopleToRank.size() != 0);}
 
   private:
     vector<PersonToRank> peopleToRank;

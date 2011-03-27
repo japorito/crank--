@@ -1,9 +1,6 @@
 #include "rank.hpp"
 #include <string>
 #include <iostream>
-#include <fstream>
-#include <sstream>
-#include <cmath>
 #include "rankutils.hpp"
 
 using namespace std;
@@ -60,8 +57,13 @@ void Rank::doRanks(const vector<Ranks> ranksystem)
       }
     }
   }
-  
   /*for (unsigned int i = 0; i < peopleToRank.size(); i++) {
     cout << peopleToRank[i].person << " needed ranked to " << peopleToRank[i].destRank << " " << peopleToRank[i].destAbbr << ". In rankline: " << peopleToRank[i].rankLine << " and rank: " << peopleToRank[i].currentRank << " " << peopleToRank[i].currentAbbr << endl << "(S)he has " << peopleToRank[i].karma << endl;
     }*/
+}
+
+const vector <PersonToRank> & Rank::getRankees() const
+{
+  //must be called after doRanks().  doRanks() requires ranksystem argument
+  return peopleToRank;
 }
