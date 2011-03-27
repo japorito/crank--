@@ -17,6 +17,17 @@ struct Data {
   int karma;
 };
 
+//struct for holding the information about the ranksystem
+struct Ranks {
+  string rank;
+  string abbreviation;
+  int minKarma;
+  int maxKarma;
+  int minToReturn;
+  int maxToReturn;
+  string rankLine;
+};
+
 enum watchFor {
   //enum used to clarify data extraction in constructor
   PERSON,

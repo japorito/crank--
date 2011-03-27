@@ -55,34 +55,43 @@ RankSystem::RankSystem(string filename)
     //Go through rank.conf and get info about rank system
     getline(rankConf, rankContainer);
     commentIndex = rankContainer.find("#"); //ignore everything after comment symbol
-    if (rankContainer.find("rank=\"") < commentIndex) {
-      //only get data if rank name is specified, else ignore line.  Nothing will work if the name isn't specified.
+    if (rankContainer.find("rank=\"") < commentIndex && rankContainer.find("abbreviation=\"") < commentIndex) {
+      //only get data if rank name and abbreviation are specified, else ignore line.  Necessary to ensure full functionality.
+      tempRank.minKarma = -1;
+      tempRank.maxKarma = -1;
+      tempRank.minToReturn = -1;
+      tempRank.maxToReturn = -1; //assume nothing unless specified
+
       index = rankContainer.find("rank=\"") + 6;
       tempRank.rank = rankContainer.substr(index, (rankContainer.find("\"", index)-index));
+
       index = rankContainer.find("abbreviation=\"") + 14;
-      if (rankContainer.find("abbreviation=\"") < commentIndex) {
-	tempRank.abbreviation = rankContainer.substr(index, (rankContainer.find("\"", index)-index));
-      }
+      tempRank.abbreviation = rankContainer.substr(index, (rankContainer.find("\"", index)-index));
+
       index = rankContainer.find("rank_lower_bound=\"") + 18;
       if (rankContainer.find("rank_lower_bound=\"") < commentIndex) {
 	numHolder = rankContainer.substr(index, (rankContainer.find("\"", index)-index));
 	tempRank.minKarma = (is_int(numHolder) ? to_int(numHolder) : -1);
       }
+
       index = rankContainer.find("rank_upper_bound=\"") + 18;
       if (rankContainer.find("rank_upper_bound=\"") < commentIndex) {
 	numHolder = rankContainer.substr(index, (rankContainer.find("\"", index)-index));
 	tempRank.maxKarma = (is_int(numHolder) ? to_int(numHolder) : -1);
       }
+
       index = rankContainer.find("change_if_below=\"") + 17;
       if (rankContainer.find("change_if_below=\"") < commentIndex) {
 	numHolder = rankContainer.substr(index, (rankContainer.find("\"", index)-index));
 	tempRank.minToReturn = (is_int(numHolder) ? to_int(numHolder) : -1);
       }
+
       index = rankContainer.find("change_if_above=\"") + 17;
       if (rankContainer.find("change_if_above=\"") < commentIndex) {
 	numHolder = rankContainer.substr(index, (rankContainer.find("\"", index)-index));
 	tempRank.maxToReturn = (is_int(numHolder) ? to_int(numHolder) : -1);
       }
+
       index = rankContainer.find("rankline=\"") + 10;
       if (rankContainer.find("rankline=\"") < commentIndex) {
 	tempRank.rankLine = rankContainer.substr(index, (rankContainer.find("\"", index)-index));
@@ -92,6 +101,8 @@ RankSystem::RankSystem(string filename)
       rankInfo.push_back(tempRank);
     }
   }
+  
+  rankConf.close();
 }
 
 void RankSystem::makeRankConf(string filename)
@@ -171,7 +182,22 @@ void RankSystem::makeRankConf(string filename)
   cout << endl << "rank.conf created.  Given a sufficiently big clan with a sufficiently simple 100% karma-based and up-to-date clan, the automatically generated rank.conf could be fully functional, but for the majority of cases, significant editing will be necessary for the ranking functionality to work.  Searching will work, except for by rank line. YOU CAN RANK WITH THIS RANK.CONF BUT IT WILL LIKELY BE WILDLY INACCURATE." << endl;
 }
 
-bool RankSystem::rankSysCheck()
+bool RankSystem::sysCheck() const
 {
-  return (rankInfo.size() == 0);
+  return (rankInfo.size() != 0);
+}
+
+const Ranks & RankSystem::operator[](int index) const
+{
+  return rankInfo[index];
+}
+
+int RankSystem::numOfRanks() const
+{
+  return rankInfo.size();
+}
+
+const vector<Ranks> & RankSystem::getRankInfo() const
+{
+  return rankInfo;
 }

@@ -27,6 +27,11 @@ int main(int argc, char* argv[])
   string filename = "", criteria = ""; //search criteria
   RankSystem ranksystem;
 
+  if (!ranksystem.sysCheck()) {
+    cout << "Failed to read the rank system from rank.conf.\n";
+    return 0;
+  }
+
   //Command line argument processing.
   for (int argument = 1; argument < argc; argument++) {
     if ((string) argv[argument] == "-i" 
@@ -58,6 +63,8 @@ int main(int argc, char* argv[])
     }
   }
   Rank rank(options, filename);
+
+  rank.doRanks(ranksystem.getRankInfo());
 
   return 0;
 }
