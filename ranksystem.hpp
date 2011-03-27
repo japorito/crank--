@@ -26,6 +26,7 @@ class RankSystem
  public:
   RankSystem(string filename="rank.conf");
   void makeRankConf(string filename); //make a limited-functionality rank.conf
+  bool rankSysCheck();
  private:
   vector <Ranks> rankInfo; //holds the important rank.conf info
 };

@@ -27,20 +27,69 @@ RankSystem::RankSystem(string filename)
     bool acceptable=false; //was a valid yes/no response given?
 
     while (!acceptable) {
+      //check whether user would like to auto-generate a rank.conf
       cout << "No rank.conf found.  Would you like to generate one based on a clan_detailedroster.php (with only limited functionality supported)? [y/n] ";
       cin >> choice;
       choice = to_lowercase(choice);
 
       if (choice == "yes" || choice == "y") {
+	//yes, do it.  Makes a rank.conf and opens it.
 	makeRankConf(filename);
 	rankConf.open(filename.c_str(), fstream::in);
 	acceptable = true;
       }
       else if (choice == "no" || choice == "n") {
+	//no.  Needs to return.
 	acceptable = true;
       }
 
       if (!acceptable) cout << "Invalid input." << endl;
+    }
+  }
+  
+  string rankContainer, numHolder;
+  size_t index = 0, commentIndex;
+  Ranks tempRank;
+
+  while (rankConf.peek() != EOF) {
+    //Go through rank.conf and get info about rank system
+    getline(rankConf, rankContainer);
+    commentIndex = rankContainer.find("#"); //ignore everything after comment symbol
+    if (rankContainer.find("rank=\"") < commentIndex) {
+      //only get data if rank name is specified, else ignore line.  Nothing will work if the name isn't specified.
+      index = rankContainer.find("rank=\"") + 6;
+      tempRank.rank = rankContainer.substr(index, (rankContainer.find("\"", index)-index));
+      index = rankContainer.find("abbreviation=\"") + 14;
+      if (rankContainer.find("abbreviation=\"") < commentIndex) {
+	tempRank.abbreviation = rankContainer.substr(index, (rankContainer.find("\"", index)-index));
+      }
+      index = rankContainer.find("rank_lower_bound=\"") + 18;
+      if (rankContainer.find("rank_lower_bound=\"") < commentIndex) {
+	numHolder = rankContainer.substr(index, (rankContainer.find("\"", index)-index));
+	tempRank.minKarma = (is_int(numHolder) ? to_int(numHolder) : -1);
+      }
+      index = rankContainer.find("rank_upper_bound=\"") + 18;
+      if (rankContainer.find("rank_upper_bound=\"") < commentIndex) {
+	numHolder = rankContainer.substr(index, (rankContainer.find("\"", index)-index));
+	tempRank.maxKarma = (is_int(numHolder) ? to_int(numHolder) : -1);
+      }
+      index = rankContainer.find("change_if_below=\"") + 17;
+      if (rankContainer.find("change_if_below=\"") < commentIndex) {
+	numHolder = rankContainer.substr(index, (rankContainer.find("\"", index)-index));
+	tempRank.minToReturn = (is_int(numHolder) ? to_int(numHolder) : -1);
+      }
+      index = rankContainer.find("change_if_above=\"") + 17;
+      if (rankContainer.find("change_if_above=\"") < commentIndex) {
+	numHolder = rankContainer.substr(index, (rankContainer.find("\"", index)-index));
+	tempRank.maxToReturn = (is_int(numHolder) ? to_int(numHolder) : -1);
+      }
+      index = rankContainer.find("rankline=\"") + 10;
+      if (rankContainer.find("rankline=\"") < commentIndex) {
+	tempRank.rankLine = rankContainer.substr(index, (rankContainer.find("\"", index)-index));
+      }
+
+      //put info pulled into main data vector
+      rankInfo.push_back(tempRank);
     }
   }
 }
@@ -117,5 +166,12 @@ void RankSystem::makeRankConf(string filename)
 	     << endl;
   }
 
+  rankConf.close();
+
   cout << endl << "rank.conf created.  Given a sufficiently big clan with a sufficiently simple 100% karma-based and up-to-date clan, the automatically generated rank.conf could be fully functional, but for the majority of cases, significant editing will be necessary for the ranking functionality to work.  Searching will work, except for by rank line. YOU CAN RANK WITH THIS RANK.CONF BUT IT WILL LIKELY BE WILDLY INACCURATE." << endl;
+}
+
+bool RankSystem::rankSysCheck()
+{
+  return (rankInfo.size() == 0);
 }
